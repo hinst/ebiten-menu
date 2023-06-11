@@ -62,7 +62,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func main() {
 	ebiten.SetWindowSize(640, 480)
-	ebiten.SetWindowTitle("Hello, World!")
+	ebiten.SetWindowTitle("Menu demo")
 	var game = &Game{}
 	game.Initialize()
 	if err := ebiten.RunGame(game); err != nil {

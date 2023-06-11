@@ -62,7 +62,7 @@ func (me *MenuUserInterface) Draw(screen *ebiten.Image) {
 			2+float32(me.GetCharacterWidth()*len(me.Items[me.SelectedItemIndex].Title))+2,
 			float32(me.GetCharacterHeight()),
 			1,
-			color.RGBA{R: 0, G: 255, B: 0, A: 0},
+			color.RGBA{R: 0, G: uint8(math.Round(255 * math.Sin(me.PulseAnimationCounter))), B: 0, A: 0},
 			false,
 		)
 	}
