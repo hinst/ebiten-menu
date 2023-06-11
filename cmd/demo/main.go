@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -10,11 +11,17 @@ import (
 	ebiten_menu "github.com/hinst/ebiten-menu"
 )
 
+const (
+	LAYOUT_SMALL = iota
+	LAYOUT_BIG
+)
+
 type Game struct {
 	UpdateTime      time.Time
 	JustPressedKeys []ebiten.Key
 	Menu            ebiten_menu.MenuUserInterface
 	IsExiting       bool
+	LayoutMode      int
 }
 
 func (me *Game) Initialize() {
@@ -55,10 +62,11 @@ func (me *Game) Draw(screen *ebiten.Image) {
 
 func (me *Game) update(deltaTime float64) {
 	me.Menu.Update(deltaTime, me.JustPressedKeys)
-	if me.Menu.PressedItemId == 2 {
+	if me.Menu.PressedItemId == 1 {
+		me.LayoutMode = (me.LayoutMode + 1) % 2
+	} else if me.Menu.PressedItemId == 2 {
 		ebiten.SetFullscreen(!ebiten.IsFullscreen())
-	}
-	if me.Menu.PressedItemId == 3 {
+	} else if me.Menu.PressedItemId == 3 {
 		me.IsExiting = true
 	}
 }
@@ -67,8 +75,14 @@ func (me *Game) draw(screen *ebiten.Image) {
 	me.Menu.Draw(screen)
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 320, 240
+func (me *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+	if me.LayoutMode == LAYOUT_SMALL {
+		return 320, 240
+	} else if me.LayoutMode == LAYOUT_BIG {
+		return 640, 480
+	} else {
+		panic("Unknown layout: " + strconv.Itoa(me.LayoutMode))
+	}
 }
 
 func main() {
