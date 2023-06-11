@@ -13,6 +13,7 @@ type MenuUserInterface struct {
 	PulseAnimationCounter float64
 	Items                 []MenuUserInterfaceItem
 	SelectedItemIndex     int
+	PressedItemId         int
 }
 
 type MenuUserInterfaceItem struct {
@@ -21,6 +22,7 @@ type MenuUserInterfaceItem struct {
 }
 
 func (me *MenuUserInterface) Update(deltaTime float64, justPressedKeys []ebiten.Key) {
+	me.PressedItemId = -1
 	if len(me.Items) > 0 {
 		for _, key := range justPressedKeys {
 			if key == ebiten.KeyUp {
@@ -34,6 +36,9 @@ func (me *MenuUserInterface) Update(deltaTime float64, justPressedKeys []ebiten.
 				if len(me.Items) <= me.SelectedItemIndex {
 					me.SelectedItemIndex = len(me.Items) - 1
 				}
+			}
+			if key == ebiten.KeyEnter {
+				me.PressedItemId = me.Items[me.SelectedItemIndex].Id
 			}
 		}
 	} else {

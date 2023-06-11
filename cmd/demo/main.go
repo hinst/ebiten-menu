@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"time"
 
@@ -13,6 +14,7 @@ type Game struct {
 	UpdateTime      time.Time
 	JustPressedKeys []ebiten.Key
 	Menu            ebiten_menu.MenuUserInterface
+	IsExiting       bool
 }
 
 func (me *Game) Initialize() {
@@ -24,7 +26,7 @@ func (me *Game) Initialize() {
 				Id:    1,
 			},
 			{
-				Title: "Information",
+				Title: "Toggle Full Screen",
 				Id:    2,
 			},
 			{
@@ -37,6 +39,9 @@ func (me *Game) Initialize() {
 
 func (me *Game) Update() error {
 	me.JustPressedKeys = inpututil.AppendJustPressedKeys(me.JustPressedKeys)
+	if me.IsExiting {
+		return errors.New("exiting")
+	}
 	return nil
 }
 
@@ -50,6 +55,12 @@ func (me *Game) Draw(screen *ebiten.Image) {
 
 func (me *Game) update(deltaTime float64) {
 	me.Menu.Update(deltaTime, me.JustPressedKeys)
+	if me.Menu.PressedItemId == 2 {
+		ebiten.SetFullscreen(!ebiten.IsFullscreen())
+	}
+	if me.Menu.PressedItemId == 3 {
+		me.IsExiting = true
+	}
 }
 
 func (me *Game) draw(screen *ebiten.Image) {
